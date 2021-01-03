@@ -75,13 +75,6 @@
           - wireguard-tools
         state: present
 
-    - name: Create path (CentOS 8)
-      file:
-        path: "{{ wireguard_path }}"
-        state: directory
-        mode: u=rwx,g=,o=
-        group: root
-
   when: ansible_facts['distribution'] == "CentOS" and ansible_facts['distribution_major_version'] == "8"
 
 - name: Install wireguard (CentOS 7)
@@ -106,13 +99,6 @@
           - wireguard-tools
         state: present
 
-    - name: Creat path (CentOS 7)
-      file:
-        path: "{{ wireguard_path }}"
-        state: directory
-        mode: u=rwx,g=,o=
-        group: root
-
   when: ansible_facts['distribution'] == "CentOS" and ansible_facts['distribution_major_version'] == "7"
 
 - name: Install wireguard and tools (zypper)
@@ -127,6 +113,8 @@
   file:
     path: "{{ wireguard_path }}"
     state: directory
+    mode: u=rwx,g=,o=
+    group: root
 
 - name: Read private key
   stat:
