@@ -14,11 +14,7 @@ MTU = {{ wireguard_mtu }}
 
 {% for node in play_hosts %}
 {% if inventory_hostname != hostvars[node]['inventory_hostname'] %}
-[Peer]
-PublicKey = {{ hostvars[node].public.content | b64decode | trim }}
-AllowedIPs = {{ hostvars[node].vpn_ip }}
-Endpoint = {{ hostvars[node]['public_addr'] | default(hostvars[node]['ansible_host']) | default(hostvars[node]['inventory_hostname']) }}:{{ wireguard_port }}
-
+{% include 'peer_conf.j2' %}
 {% endif %}
 {% endfor %}
 

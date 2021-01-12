@@ -1,4 +1,11 @@
 ---
+- name: Check if the exposed interface exists
+  assert:
+    that:
+      - expose_interface in ansible_interfaces
+    fail_msg: "The interface {{ expose_interface }} does not exist on this node. Available interfaces: {{ ansible_interfaces }}"
+  when: expose_interface is defined
+
 - name: Install linux headers (Ubuntu)
   apt:
     update_cache: yes

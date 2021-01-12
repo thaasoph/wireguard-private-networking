@@ -1,7 +1,7 @@
-# Private server to server network with ansible and wireguard 
- 
+# Private server to server network with ansible and wireguard
+
 [![Ansible Role](https://img.shields.io/ansible/role/d/33136)](https://galaxy.ansible.com/mawalu/wireguard_private_networking)
- 
+
 This role allowes you to deploy a fast, secure and provider agnostic private network between multiple servers. This is usefull for providers that do not provide you with a private network or if you want to connect servers that are spread over multiple regions and providers.
 
 ## How
@@ -22,6 +22,10 @@ Install this role, assign a `vpn_ip` variable to every host that should be part 
 
 Optionally, you can set a `public_addr` on each host. This address will be used to connect to the wireguard peer instead of the address in the inventory. Useful if you are configuring over a different network than wireguard is using. e.g. ansible connects over a LAN to your peer.
 
+If `expose_interface` is set, the subnet of the interface e.g. eth0 of the peer will be added to the AllowedIps section of this peer and the routing between Subnet and VPN will be set up. Be careful with conflicting subnets and remember to set a static route on your other devices in the subnet or on the default gateway.
+
+`expose_subnets` allows to specify a list of subnets that will be exposed by this peer. Along with the subnet of the `expose_interface` setting they will be added to the AllowedIps section of this peer.
+
 ```yaml
 # inventory host file
 
@@ -30,9 +34,12 @@ wireguard:
     1.1.1.1:
       vpn_ip: 10.1.0.1/32
       public_addr: "example.com" # optional
+      expose_interface: "eth0" # optional
     2.2.2.2:
       vpn_ip: 10.1.0.2/32
-
+      expose_subnets: # optional
+        - 192.168.3.0/24
+        - 192.168.4.0/24
 ```
 
 ```yaml
@@ -89,8 +96,8 @@ wireguard_additional_peers:
   - comment: other_network
     ip: 10.32.0.0/16
     key: their_wireguard_public_key
-    keepalive: 20 
-    endpoint: some.endpoint:2230 
+    keepalive: 20
+    endpoint: some.endpoint:2230
 
 wireguard_post_up: "iptables ..." # PostUp hook command
 wireguard_post_down: "iptables"   # PostDown hook command

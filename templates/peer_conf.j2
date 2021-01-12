@@ -1,0 +1,15 @@
+[Peer]
+PublicKey = {{ hostvars[node].public.content | b64decode | trim }}
+{% set allowedIps = [hostvars[node].vpn_ip] %}
+{% if hostvars[node].expose_interface is defined %}
+{% set interface_config =  hostvars[node]['ansible_' ~ hostvars[node].expose_interface]  %}
+{% set interface_subnet =  interface_config.ipv4.address ~ '/' ~ interface_config.ipv4.netmask  %}
+{% set _ = allowedIps.append(interface_subnet | ansible.netcommon.ipaddr('network/prefix')) %}
+{% endif %}
+{% if hostvars[node].expose_subnets is defined %}
+{% for subnet in hostvars[node].expose_subnets  %}
+{% set _ = allowedIps.append(subnet) %}
+{% endfor %}
+{% endif %}
+AllowedIPs = {{ allowedIps | join(',')}}
+Endpoint = {{ hostvars[node]['public_addr'] | default(hostvars[node]['ansible_host'] | default(hostvars[node]['inventory_hostname'])) }}:{{ wireguard_port }}
