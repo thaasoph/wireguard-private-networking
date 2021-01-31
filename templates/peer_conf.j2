@@ -12,9 +12,9 @@ PublicKey = {{ hostvars[node].public.content | b64decode | trim }}
 {% endfor %}
 {% endif %}
 AllowedIPs = {{ allowedIps | join(', ')}}
-{% if not hostvars[node].client_only %}
+{% if hostvars[node].client_only is defined and not hostvars[node].client_only %}
 Endpoint = {{ hostvars[node]['public_addr'] | default(hostvars[node]['ansible_host'] | default(hostvars[node]['inventory_hostname'])) }}:{{ wireguard_port }}
 {% endif %}
-{% if client_only %}
+{% if client_only is defined and client_only %}
 PersistentKeepalive = 25
 {% endif %}
