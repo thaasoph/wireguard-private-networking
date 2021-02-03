@@ -3,7 +3,7 @@ Address = {{ vpn_ip }}
 PrivateKey = {{ private.content | b64decode | trim }}
 {% set post_up = [] %}
 {% set post_down = [] %}
-{% if relay_for is defined %}
+{% if gateway_to is defined %}
 {% set _ = post_up.append("iptables -A FORWARD -i %i -j ACCEPT") %}
 {% set _ = post_up.append("iptables -A FORWARD -o %i -j ACCEPT") %}
 {% set _ = post_down.append("iptables -D FORWARD -i %i -j ACCEPT") %}

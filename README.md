@@ -23,11 +23,11 @@ Install this role, assign a `vpn_ip` variable to every host that should be part 
 Optionally, you can set a `public_addr` on each host. This address will be used to connect to the wireguard peer instead of the address in the inventory. Useful if you are configuring over a different network than wireguard is using. e.g. ansible connects over a LAN to your peer.
 
 If `expose_interface` is set, the subnet of the interface e.g. eth0 of the peer will be added to the AllowedIps section of this peer and the routing between Subnet and VPN will be set up. Be careful with conflicting subnets and remember to set a static route on your other devices in the subnet or on the default gateway.
-`relay_for` allows to specify a list of subnets that this peer can act as a relay for. Wireguard routes packages to the peer with the most specific subnet relay settings. The rule prevents you from setting the subnet of a peer in the AllowedIps section of another peer which would absolutely lock you out. You sould be very careful with conflicting subnet. If you can affort it, you sould give each peer that acts as a direct relay to a subnet its own class C net. Even the cheapest consumer grade hardware is able to specify a custom class c nets.
+`gateway_to` allows to specify a list of subnets that this peer can act as a relay for. Wireguard routes packages to the peer with the most specific subnet relay settings. The rule prevents you from setting the subnet of a peer in the AllowedIps section of another peer which would absolutely lock you out. You sould be very careful with conflicting subnet. If you can affort it, you sould give each peer that acts as a direct relay to a subnet its own class C net. Even the cheapest consumer grade hardware is able to specify a custom class c nets.
 
 If a host does not have an endpoint that is reachable from the other hosts. E.g. behind a NAT that you cannot configure, behind a firewall or without a static address, you should set the flag `client_only`.
 This will ensure the client opens a connection to every reachable host and tries to keep it alive. That way, you can access these peers and their networks.
-Be aware, that if you have multiple hosts as `client_only` they cannot directly communitace to each other. You need at least one host that is reachable from both that can act as a relay. To achieve this, you can utilize the option `relay_for`.
+Be aware, that if you have multiple hosts as `client_only` they cannot directly communitace to each other. You need at least one host that is reachable from both that can act as a relay. To achieve this, you can utilize the option `gateway_to`.
 
 
 `expose_subnets` allows to specify a list of subnets that will be exposed by this peer. Along with the subnet of the `expose_interface` setting they will be added to the AllowedIps section of this peer.
@@ -49,7 +49,7 @@ wireguard:
         - 192.168.4.0/24
      3.3.3.3:
       vpn_ip: 10.1.0.3/32
-      relay_for: # optional
+      gateway_to: # optional
         - 10.1.0.0/24
         - 192.168.0.0/16
 ```
