@@ -6,8 +6,8 @@ PublicKey = {{ hostvars[node].public.content | b64decode | trim }}
 {% set interface_config =  hostvars[node]['ansible_' ~ hostvars[node].expose_interface]  %}
 {% set _ = allowedIps.append( ( interface_config.ipv4.address ~ '/' ~ interface_config.ipv4.netmask ) | ansible.netcommon.ipaddr('network/prefix')) %}
 {% endif %}
-{% if hostvars[node].expose_subnets is defined %}
-{% for subnet in hostvars[node].expose_subnets if subnet != ansibleDefaultNetwork %}
+{% if hostvars[node].gateway_to is defined %}
+{% for subnet in hostvars[node].gateway_to if subnet != ansibleDefaultNetwork %}
 {% set _ = allowedIps.append(subnet) %}
 {% endfor %}
 {% endif %}
