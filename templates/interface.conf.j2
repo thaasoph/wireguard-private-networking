@@ -10,7 +10,7 @@ PrivateKey = {{ private.content | b64decode | trim }}
 {% set _ = post_down.append("iptables -D FORWARD -o %i -j ACCEPT") %}
 {% endif %}
 {% if wireguard_post_up %}
-{% set _ = post_down.append(wireguard_post_up) %}
+{% set _ = post_up.append(wireguard_post_up) %}
 {% endif %}
 {% if wireguard_post_down %}
 {% set _ = post_down.append(wireguard_post_down) %}
