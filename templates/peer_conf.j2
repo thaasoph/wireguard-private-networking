@@ -2,10 +2,12 @@
 PublicKey = {{ hostvars[node].public.content | b64decode | trim }}
 {% set ansibleDefaultNetwork = ( ansible_default_ipv4.network ~ '/' ~ ansible_default_ipv4.netmask ) | ansible.netcommon.ipaddr('network/prefix') %}
 {% set allowedIps = [hostvars[node].vpn_ip] %}
+{# Add interface Address to AllowedIPs list #}
 {% if hostvars[node].expose_interface is defined %}
 {% set interface_config =  hostvars[node]['ansible_' ~ hostvars[node].expose_interface]  %}
 {% set _ = allowedIps.append( ( interface_config.ipv4.address ~ '/' ~ interface_config.ipv4.netmask ) | ansible.netcommon.ipaddr('network/prefix')) %}
 {% endif %}
+{# Add addresses from "gateway_to" config to allowed IPs #}
 {% if hostvars[node].gateway_to is defined %}
 {% for subnet in hostvars[node].gateway_to if subnet != ansibleDefaultNetwork %}
 {% set _ = allowedIps.append(subnet) %}

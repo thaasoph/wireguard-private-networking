@@ -41,7 +41,7 @@ AllowedIPs = {{ client_vpn_ip }}
 {% endif %}
 
 {% if wireguard_additional_peers  %}
-{% for node in wireguard_additional_peers %}
+{% for node in wireguard_additional_peers if client_only is undefined or not client_only or node.endpoint is defined %}
 # {{ node.comment  }}
 [Peer]
 PublicKey = {{ node.key }}
