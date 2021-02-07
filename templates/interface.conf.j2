@@ -41,6 +41,8 @@ AllowedIPs = {{ client_vpn_ip }}
 {% endif %}
 
 {% if wireguard_additional_peers  %}
+{# Adds all of the configured additional peers, unless the the peer is 'client_only' and the additional peers does
+not have an endpoint. In that case neither of them has an endpoint so a direct communication between them is impossible #}
 {% for node in wireguard_additional_peers if client_only is undefined or not client_only or node.endpoint is defined %}
 # {{ node.comment  }}
 [Peer]
